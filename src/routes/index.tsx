@@ -1,29 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Header } from "@/components/site/Header";
+import { Hero } from "@/components/site/Hero";
+import { Beneficios } from "@/components/site/Beneficios";
+import { Ranking } from "@/components/site/Ranking";
+import { Premios } from "@/components/site/Premios";
+import { ComoFunciona } from "@/components/site/ComoFunciona";
+import { Participe } from "@/components/site/Participe";
+import { Galeria } from "@/components/site/Galeria";
+import { Duvidas } from "@/components/site/Duvidas";
+import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Rapidin · Promoção Chute ao Gol" },
+      { name: "description", content: "Participe da promoção de Chute ao Gol da Rapidin e concorra a Smart TV, Tablet e Kit Copa." },
+      { property: "og:title", content: "Rapidin · Promoção Chute ao Gol" },
+      { property: "og:description", content: "Se travou, não é Rapidin! Acompanhe o ranking ao vivo da torcida." },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-white">
+      <Header />
+      <Hero />
+      <Beneficios />
+      <Ranking />
+      <Premios />
+      <ComoFunciona />
+      <Participe />
+      <Galeria />
+      <Duvidas />
+      <Footer />
     </div>
   );
 }
