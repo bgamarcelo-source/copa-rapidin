@@ -3,14 +3,16 @@ import { supabase, type Participante } from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatarCpf, formatarTel } from "@/lib/validators";
-import { Trash2, UserPlus } from "lucide-react";
+import { Trash2, UserPlus, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
 import { CadastroParticipante } from "./CadastroParticipante";
+import { exportarParticipantesExcel } from "@/lib/exportarExcel";
 
 export function ParticipantesAdmin() {
   const [lista, setLista] = useState<Participante[]>([]);
   const [filtro, setFiltro] = useState("");
   const [showCadastro, setShowCadastro] = useState(false);
+  const [exportando, setExportando] = useState(false);
 
   async function load() {
     const { data } = await supabase
@@ -36,6 +38,23 @@ export function ParticipantesAdmin() {
     return p.nome.toLowerCase().includes(f) || p.telefone.includes(filtro) || p.cpf.includes(filtro);
   });
 
+  async function exportar() {
+    if (lista.length === 0) {
+      toast.error("Nenhum participante para exportar");
+      return;
+    }
+    setExportando(true);
+    try {
+      await exportarParticipantesExcel(lista);
+      toast.success(`${lista.length} participantes exportados`);
+    } catch (e) {
+      console.error(e);
+      toast.error("Falha ao exportar Excel");
+    } finally {
+      setExportando(false);
+    }
+  }
+
   return (
     <div className="space-y-4">
       {showCadastro ? (
@@ -44,9 +63,20 @@ export function ParticipantesAdmin() {
           onCancelar={() => setShowCadastro(false)}
         />
       ) : (
-        <Button onClick={() => setShowCadastro(true)} className="bg-laranja hover:bg-laranja-dark">
-          <UserPlus size={16} /> Cadastrar novo participante
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={() => setShowCadastro(true)} className="bg-laranja hover:bg-laranja-dark">
+            <UserPlus size={16} /> Cadastrar novo participante
+          </Button>
+          <Button
+            onClick={exportar}
+            disabled={exportando || lista.length === 0}
+            variant="outline"
+            className="border-verde text-verde hover:bg-verde/10"
+          >
+            <FileSpreadsheet size={16} />
+            {exportando ? "Exportando..." : "Exportar para Excel"}
+          </Button>
+        </div>
       )}
 
       <div className="rounded-2xl bg-white p-5 shadow">
