@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase, type Bairro, type Participante } from "@/lib/supabase";
+import { supabase, type Participante } from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatarCpf, formatarTel } from "@/lib/validators";
@@ -9,17 +9,15 @@ import { CadastroParticipante } from "./CadastroParticipante";
 
 export function ParticipantesAdmin() {
   const [lista, setLista] = useState<Participante[]>([]);
-  const [bairros, setBairros] = useState<Bairro[]>([]);
   const [filtro, setFiltro] = useState("");
   const [showCadastro, setShowCadastro] = useState(false);
 
   async function load() {
-    const [{ data: p }, { data: b }] = await Promise.all([
-      supabase.from("participantes").select("*").order("pontos_total", { ascending: false }),
-      supabase.from("bairros").select("*").order("nome"),
-    ]);
-    if (p) setLista(p);
-    if (b) setBairros(b);
+    const { data } = await supabase
+      .from("participantes")
+      .select("*")
+      .order("pontos_total", { ascending: false });
+    if (data) setLista(data);
   }
 
   useEffect(() => { load(); }, []);
@@ -66,7 +64,6 @@ export function ParticipantesAdmin() {
                 <th className="py-2">Nome</th>
                 <th className="py-2">Telefone</th>
                 <th className="py-2">CPF</th>
-                <th className="py-2">Bairro</th>
                 <th className="py-2 text-right">Pontos</th>
                 <th className="py-2"></th>
               </tr>
@@ -77,7 +74,6 @@ export function ParticipantesAdmin() {
                   <td className="py-2 font-semibold">{p.nome}</td>
                   <td className="py-2">{formatarTel(p.telefone)}</td>
                   <td className="py-2">{formatarCpf(p.cpf)}</td>
-                  <td className="py-2">{bairros.find(b => b.id === p.bairro_id)?.nome ?? "—"}</td>
                   <td className="py-2 text-right font-bold text-laranja">{p.pontos_total}</td>
                   <td className="py-2 text-right">
                     <button onClick={() => excluir(p.id)} className="rounded-md p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
@@ -87,7 +83,7 @@ export function ParticipantesAdmin() {
                 </tr>
               ))}
               {filtrada.length === 0 && (
-                <tr><td colSpan={6} className="py-6 text-center text-muted-foreground">Nenhum participante.</td></tr>
+                <tr><td colSpan={5} className="py-6 text-center text-muted-foreground">Nenhum participante.</td></tr>
               )}
             </tbody>
           </table>

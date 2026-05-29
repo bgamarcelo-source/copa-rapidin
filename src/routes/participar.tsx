@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { supabase, type Bairro } from "@/lib/supabase";
+import { useState } from "react";
+import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,20 +22,9 @@ export const Route = createFileRoute("/participar")({
 });
 
 function Participar() {
-  const [bairros, setBairros] = useState<Bairro[]>([]);
-  const [novoBairro, setNovoBairro] = useState("");
-  const [showNovoBairro, setShowNovoBairro] = useState(false);
-  const [form, setForm] = useState({ nome: "", telefone: "", cpf: "", bairro_id: "" });
+  const [form, setForm] = useState({ nome: "", telefone: "", cpf: "" });
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ tipo: "ok" | "erro" | "duplicado"; msg: string } | null>(null);
-
-  useEffect(() => {
-    supabase
-      .from("bairros")
-      .select("*")
-      .order("nome")
-      .then(({ data }) => data && setBairros(data));
-  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -45,38 +34,11 @@ function Participar() {
     if (!validarTel(form.telefone)) return setStatus({ tipo: "erro", msg: "Telefone inválido." });
     if (!validarCpf(form.cpf)) return setStatus({ tipo: "erro", msg: "CPF inválido." });
 
-    let bairroId = form.bairro_id;
-
-    if (showNovoBairro) {
-      if (novoBairro.trim().length < 2) return setStatus({ tipo: "erro", msg: "Digite o nome do bairro." });
-      const { data: bairroExistente } = await supabase
-        .from("bairros")
-        .select("id")
-        .ilike("nome", novoBairro.trim())
-        .maybeSingle();
-      if (bairroExistente) {
-        bairroId = bairroExistente.id;
-      } else {
-        const { data: novo, error: erroBairro } = await supabase
-          .from("bairros")
-          .insert({ nome: novoBairro.trim() })
-          .select("id")
-          .single();
-        if (erroBairro || !novo) {
-          return setStatus({ tipo: "erro", msg: "Não consegui cadastrar o bairro. Tenta de novo." });
-        }
-        bairroId = novo.id;
-      }
-    }
-
-    if (!bairroId) return setStatus({ tipo: "erro", msg: "Selecione seu bairro." });
-
     setLoading(true);
     const { error } = await supabase.from("participantes").insert({
       nome: form.nome.trim(),
       telefone: limparTel(form.telefone),
       cpf: limparCpf(form.cpf),
-      bairro_id: bairroId,
     });
     setLoading(false);
 
@@ -88,9 +50,7 @@ function Participar() {
     }
 
     setStatus({ tipo: "ok", msg: "Pronto! Procure o atendente Rapidin pra começar a chutar." });
-    setForm({ nome: "", telefone: "", cpf: "", bairro_id: "" });
-    setNovoBairro("");
-    setShowNovoBairro(false);
+    setForm({ nome: "", telefone: "", cpf: "" });
   }
 
   return (
@@ -162,49 +122,6 @@ function Participar() {
                 inputMode="numeric"
                 required
               />
-            </div>
-
-            <div>
-              <Label htmlFor="bairro">Bairro</Label>
-              {!showNovoBairro ? (
-                <>
-                  <select
-                    id="bairro"
-                    value={form.bairro_id}
-                    onChange={(e) => setForm({ ...form, bairro_id: e.target.value })}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs"
-                    required
-                  >
-                    <option value="">Selecione seu bairro</option>
-                    {bairros.map((b) => (
-                      <option key={b.id} value={b.id}>{b.nome}</option>
-                    ))}
-                  </select>
-                  <button
-                    type="button"
-                    onClick={() => setShowNovoBairro(true)}
-                    className="mt-1 text-xs font-bold text-laranja hover:underline"
-                  >
-                    Meu bairro não está na lista
-                  </button>
-                </>
-              ) : (
-                <div className="space-y-1">
-                  <Input
-                    value={novoBairro}
-                    onChange={(e) => setNovoBairro(e.target.value)}
-                    placeholder="Digite o nome do seu bairro"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => { setShowNovoBairro(false); setNovoBairro(""); }}
-                    className="text-xs font-bold text-muted-foreground hover:underline"
-                  >
-                    Escolher da lista
-                  </button>
-                </div>
-              )}
             </div>
 
             <Button type="submit" disabled={loading} className="w-full bg-laranja hover:bg-laranja-dark">
