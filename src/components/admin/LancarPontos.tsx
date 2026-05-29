@@ -3,9 +3,10 @@ import { supabase, type Participante } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Trash2, Undo2 } from "lucide-react";
+import { Undo2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { formatarCpf, formatarTel, limparTel } from "@/lib/validators";
+import { CadastroParticipante } from "./CadastroParticipante";
 
 type EventoComPart = {
   id: string;
@@ -24,6 +25,7 @@ export function LancarPontos({ userId }: { userId: string }) {
   const [pontos, setPontos] = useState<number>(1);
   const [local, setLocal] = useState<"santo_antonio" | "fanfest" | "outro">("santo_antonio");
   const [historico, setHistorico] = useState<EventoComPart[]>([]);
+  const [showCadastro, setShowCadastro] = useState(false);
 
   async function buscar(q: string) {
     setBusca(q);
@@ -113,8 +115,30 @@ export function LancarPontos({ userId }: { userId: string }) {
                 ))}
               </div>
             )}
-            {busca.length >= 2 && resultados.length === 0 && (
-              <p className="text-sm text-muted-foreground">Nenhum participante encontrado. Peça pra ele se cadastrar em <code>/participar</code>.</p>
+            {busca.length >= 2 && resultados.length === 0 && !showCadastro && (
+              <div className="rounded-xl border-2 border-dashed border-laranja/40 bg-laranja/5 p-4 text-center">
+                <p className="text-sm text-muted-foreground">Nenhum participante encontrado.</p>
+                <Button
+                  type="button"
+                  onClick={() => setShowCadastro(true)}
+                  className="mt-3 bg-laranja hover:bg-laranja-dark"
+                >
+                  <UserPlus size={16} /> Cadastrar "{busca}" agora
+                </Button>
+              </div>
+            )}
+
+            {showCadastro && (
+              <CadastroParticipante
+                nomeInicial={busca}
+                onCadastrado={(novo) => {
+                  setShowCadastro(false);
+                  setSelecionado(novo);
+                  setBusca("");
+                  setResultados([]);
+                }}
+                onCancelar={() => setShowCadastro(false)}
+              />
             )}
           </>
         ) : (
