@@ -63,7 +63,7 @@ export function TopAtletas() {
                       <span className="text-muted-foreground">{i + 1}º</span>
                     )}
                   </td>
-                  <td className="px-3 py-3">{primeiroNome(a.nome)}</td>
+                  <td className="px-3 py-3">{a.nome}</td>
                   <td className="px-3 py-3 text-right text-laranja">{a.pontos_total.toLocaleString("pt-BR")}</td>
                 </tr>
               ))}
@@ -79,16 +79,7 @@ export function TopAtletas() {
           </table>
         </div>
 
-        <p className="mt-3 text-center text-xs text-muted-foreground">
-          *Privacidade: mostramos só o primeiro nome no ranking público.
-        </p>
       </div>
     </section>
   );
-}
-
-function primeiroNome(nome: string) {
-  const partes = nome.trim().split(/\s+/);
-  if (partes.length === 1) return partes[0];
-  return `${partes[0]} ${partes[1][0]}.`;
 }
