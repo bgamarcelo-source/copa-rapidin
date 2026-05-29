@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase, type Banner } from "@/lib/supabase";
+import { asset } from "@/lib/assets";
 
 export function Hero() {
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -54,15 +55,23 @@ export function Hero() {
             <img
               src={banners[idx].imagem_url}
               alt=""
-              className="max-h-[420px] w-auto rounded-2xl object-contain shadow-2xl"
+              className="max-h-[460px] w-auto rounded-2xl object-contain shadow-2xl"
             />
           ) : (
-            <img
-              src="/banner-principal.png"
-              alt="Mascote Rapidin"
-              className="max-h-[420px] w-auto rounded-2xl object-contain"
-              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-            />
+            <div className="relative">
+              <img
+                src={asset("/banner-principal.png")}
+                alt=""
+                className="max-h-[420px] w-auto rounded-2xl object-contain opacity-90"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+              />
+              <img
+                src={asset("/assets/mascote/Mascote-Rapidin-copa.png")}
+                alt="Mascote Rapidin"
+                className="absolute -bottom-4 left-1/2 max-h-[480px] w-auto -translate-x-1/2 object-contain drop-shadow-2xl"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+              />
+            </div>
           )}
 
           {banners.length > 1 && (

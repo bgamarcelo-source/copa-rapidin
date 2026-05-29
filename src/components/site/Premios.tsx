@@ -1,4 +1,5 @@
 import { Trophy, Medal, Award } from "lucide-react";
+import { asset } from "@/lib/assets";
 
 const premios = [
   {
@@ -6,21 +7,21 @@ const premios = [
     icon: Trophy,
     cor: "from-amarelo to-laranja",
     titulo: "Smart TV 55\" + 1 ano de internet + Premiere",
-    img: "/premios-primeiro.png",
+    img: asset("/premios-primeiro.png"),
   },
   {
     posicao: "2º LUGAR",
     icon: Medal,
     cor: "from-laranja to-laranja-dark",
     titulo: "Tablet Android + 6 meses com 700MB",
-    img: "/premios-segundo.png",
+    img: asset("/premios-segundo.png"),
   },
   {
     posicao: "3º LUGAR",
     icon: Award,
     cor: "from-verde to-verde-dark",
     titulo: "Kit Copa Rapidin (camisa + 2 copos)",
-    img: "/premios-terceiro.png",
+    img: asset("/premios-terceiro.png"),
   },
 ];
 

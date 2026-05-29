@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase, type Bairro, type DestaqueDoDia, type DueloDoDia } from "@/lib/supabase";
-import { Trophy, ArrowUp, ArrowDown, Minus } from "lucide-react";
+import { Trophy, ArrowUp, ArrowDown, Minus, Star, Swords } from "lucide-react";
 
 const medalha = ["🥇", "🥈", "🥉"];
 
@@ -100,7 +100,7 @@ export function Ranking() {
 
           <div className="space-y-4">
             <div className="rounded-2xl border-2 border-laranja/30 bg-gradient-to-br from-laranja/5 to-amarelo/10 p-4 shadow-sm">
-              <div className="mb-2 text-xs font-bold uppercase tracking-wide text-laranja">⭐ Destaque do dia</div>
+              <div className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-laranja"><Star size={14} className="fill-laranja" /> Destaque do dia</div>
               {destaque?.participante ? (
                 <div className="flex items-center gap-3">
                   {destaque.participante.foto_url ? (
@@ -122,7 +122,7 @@ export function Ranking() {
             </div>
 
             <div className="rounded-2xl border-2 border-verde/30 bg-gradient-to-br from-verde/5 to-amarelo/10 p-4 shadow-sm">
-              <div className="mb-2 text-xs font-bold uppercase tracking-wide text-verde">⚔️ Duelo do dia</div>
+              <div className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-verde"><Swords size={14} /> Duelo do dia</div>
               {duelo?.bairro_a && duelo.bairro_b ? (
                 <div className="grid grid-cols-3 items-center gap-2 text-center">
                   <div>

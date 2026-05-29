@@ -68,6 +68,17 @@
   h1, h2, h3, .display { font-family: var(--font-display); letter-spacing: 0.01em; }
 }
 
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+.animate-accordion-down { animation: accordion-down 0.2s ease-out; }
+.animate-accordion-up { animation: accordion-up 0.2s ease-out; }
+
 @layer utilities {
   .bg-laranja { background-color: var(--color-laranja); }
   .bg-laranja-dark { background-color: var(--color-laranja-dark); }
