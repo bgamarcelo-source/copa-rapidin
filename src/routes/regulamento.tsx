@@ -43,18 +43,32 @@ function Regulamento() {
         <li>Os pontos são lançados pelo atendente Rapidin diretamente na plataforma e ficam visíveis no ranking público.</li>
       </ol>
 
-      <h2>5. Pontuação</h2>
+      <h2>5. Como funciona o jogo (Chute ao Gol)</h2>
       <ul>
-        <li>Cada chute certeiro vale <strong>[REVISAR COM ADVOGADO — definir pontos por chute, número máximo de chutes por noite, regras de desempate]</strong>.</li>
-        <li>O ranking da torcida na página inicial mostra a pontuação <strong>do dia</strong> e é zerado todo amanhecer.</li>
-        <li>O Top 10 Atletas mostra a pontuação <strong>acumulada</strong> durante toda a promoção.</li>
-        <li>A pontuação total de cada participante é usada para calcular números da sorte: quanto mais pontos, mais números o participante recebe e maiores são suas chances de ganhar.</li>
+        <li>Cada jogador senta em uma ponta do campinho, com os <strong>pés dentro do campo</strong>.</li>
+        <li>Sem se levantar, o participante tenta chutar a bola e fazer gol no lado do adversário.</li>
+        <li>Ao mesmo tempo, deve defender o próprio gol usando os pés para bloquear os chutes.</li>
+        <li><strong>Vence quem marcar 3 (três) gols primeiro.</strong></li>
+        <li><strong>É proibido:</strong> levantar do chão, usar as mãos ou sair do próprio lado do campo. O descumprimento desclassifica o jogador da partida.</li>
+        <li>Não há limite de partidas por participante — você pode jogar o quanto conseguir e quantas vezes aguentar.</li>
       </ul>
 
-      <h2>6. Chances extras para novos assinantes</h2>
+      <h2>6. Pontuação</h2>
+      <p>Os pontos são <strong>cumulativos</strong> ao longo de toda a promoção e podem ser obtidos das seguintes formas:</p>
+      <ul>
+        <li><strong>2 pontos</strong> — vencer uma partida de Chute ao Gol.</li>
+        <li><strong>1 ponto</strong> — perder uma partida (ponto de participação).</li>
+        <li><strong>1 ponto</strong> — novo assinante Rapidin durante o período da promoção.</li>
+        <li><strong>1 ponto</strong> — boleto de julho pago dentro do prazo (opt-in por contrato).</li>
+      </ul>
       <p>
-        Novos clientes que contratarem qualquer plano Rapidin durante o período da promoção ganham
-        <strong> [REVISAR COM ADVOGADO — definir quantos pontos/multiplicador de chances]</strong>.
+        O Ranking da Torcida na página inicial mostra a pontuação <strong>do dia</strong> (zera todo
+        amanhecer). O Top 10 Atletas mostra a pontuação <strong>acumulada</strong> de toda a promoção.
+      </p>
+      <p>
+        <strong>[REVISAR COM ADVOGADO — confirmar mecânica final de premiação: (a) os 3 maiores
+        pontuadores do ranking acumulado levam diretamente OU (b) os pontos viram "números da sorte"
+        para um sorteio no fim da campanha. Definir também critério de desempate.]</strong>
       </p>
 
       <h2>7. Prêmios</h2>
