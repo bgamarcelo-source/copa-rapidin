@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { supabase, type Participante, type Bairro } from "@/lib/supabase";
+import { supabase, type Participante } from "@/lib/supabase";
 import { Trophy, Target } from "lucide-react";
 
 const medalha = ["🥇", "🥈", "🥉"];
 
-type Linha = Participante & { bairro?: Bairro };
+type Linha = Participante;
 
 export function TopAtletas() {
   const [atletas, setAtletas] = useState<Linha[]>([]);
@@ -12,7 +12,7 @@ export function TopAtletas() {
   async function load() {
     const { data } = await supabase
       .from("participantes")
-      .select("*, bairro:bairros(*)")
+      .select("*")
       .order("pontos_total", { ascending: false })
       .limit(10);
     if (data) setAtletas(data as Linha[]);
@@ -36,7 +36,7 @@ export function TopAtletas() {
               <Trophy className="text-laranja" /> TOP 10 ATLETAS
             </h2>
             <p className="text-sm text-muted-foreground">
-              Os 3 primeiros ganham os prêmios. Quem chuta mais, leva.
+              Quanto mais pontos mais números da sorte você ganha, e tem mais chances de ganhar!
             </p>
           </div>
         </div>
@@ -47,7 +47,6 @@ export function TopAtletas() {
               <tr>
                 <th className="px-3 py-3 text-left">POSIÇÃO</th>
                 <th className="px-3 py-3 text-left">ATLETA</th>
-                <th className="px-3 py-3 text-left">BAIRRO</th>
                 <th className="px-3 py-3 text-right">PONTOS</th>
               </tr>
             </thead>
@@ -65,13 +64,12 @@ export function TopAtletas() {
                     )}
                   </td>
                   <td className="px-3 py-3">{primeiroNome(a.nome)}</td>
-                  <td className="px-3 py-3 text-muted-foreground">{a.bairro?.nome ?? "—"}</td>
                   <td className="px-3 py-3 text-right text-laranja">{a.pontos_total.toLocaleString("pt-BR")}</td>
                 </tr>
               ))}
               {atletas.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-3 py-10 text-center text-muted-foreground">
+                  <td colSpan={3} className="px-3 py-10 text-center text-muted-foreground">
                     <Target className="mx-auto mb-2 text-laranja/50" size={32} />
                     Ninguém pontuou ainda. Seja o primeiro!
                   </td>

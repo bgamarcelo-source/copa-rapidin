@@ -5,27 +5,25 @@ import { LancarPontos } from "@/components/admin/LancarPontos";
 import { ParticipantesAdmin } from "@/components/admin/Participantes";
 import { BairrosAdmin } from "@/components/admin/Bairros";
 import { DestaqueAdmin } from "@/components/admin/Destaque";
-import { DueloAdmin } from "@/components/admin/Duelo";
 import { BannersAdmin } from "@/components/admin/Banners";
 import { GaleriaAdmin } from "@/components/admin/Galeria";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
-import { LogOut, Target, Users, MapPin, Star, Swords, Image as ImageIcon, Camera } from "lucide-react";
+import { LogOut, Target, Users, MapPin, Star, Image as ImageIcon, Camera } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Painel Admin · Rapidin" }] }),
   component: AdminPage,
 });
 
-type Aba = "lancar" | "participantes" | "bairros" | "destaque" | "duelo" | "banners" | "galeria";
+type Aba = "lancar" | "participantes" | "bairros" | "destaque" | "banners" | "galeria";
 
 const abas: { id: Aba; titulo: string; icon: typeof Target }[] = [
   { id: "lancar", titulo: "Lançar pontos", icon: Target },
   { id: "participantes", titulo: "Participantes", icon: Users },
   { id: "bairros", titulo: "Bairros", icon: MapPin },
   { id: "destaque", titulo: "Destaque", icon: Star },
-  { id: "duelo", titulo: "Duelo", icon: Swords },
   { id: "banners", titulo: "Banners", icon: ImageIcon },
   { id: "galeria", titulo: "Galeria", icon: Camera },
 ];
@@ -75,7 +73,6 @@ function AdminInner({ userId, email }: { userId: string; email: string }) {
         {aba === "participantes" && <ParticipantesAdmin />}
         {aba === "bairros" && <BairrosAdmin />}
         {aba === "destaque" && <DestaqueAdmin userId={userId} />}
-        {aba === "duelo" && <DueloAdmin />}
         {aba === "banners" && <BannersAdmin />}
         {aba === "galeria" && <GaleriaAdmin />}
       </div>

@@ -3,7 +3,7 @@ import { asset } from "@/lib/assets";
 
 const premios = [
   {
-    posicao: "1º LUGAR",
+    posicao: "Primeiro Prêmio",
     icon: Trophy,
     cor: "text-amarelo",
     bgPos: "bg-amarelo",
@@ -12,7 +12,7 @@ const premios = [
     img: asset("/premios-primeiro.png"),
   },
   {
-    posicao: "2º LUGAR",
+    posicao: "Segundo Prêmio",
     icon: Medal,
     cor: "text-laranja",
     bgPos: "bg-laranja",
@@ -21,7 +21,7 @@ const premios = [
     img: asset("/premios-segundo.png"),
   },
   {
-    posicao: "3º LUGAR",
+    posicao: "Terceiro Prêmio",
     icon: Award,
     cor: "text-verde",
     bgPos: "bg-verde",
@@ -40,7 +40,7 @@ export function Premios() {
             Concorra aos prêmios
           </div>
           <h2 className="display text-4xl text-verde md:text-5xl">PREMIAÇÕES</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Os 3 melhores do ranking levam para casa</p>
+          <p className="mt-2 text-sm text-muted-foreground">Confira os prêmios que você pode levar para casa.</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
