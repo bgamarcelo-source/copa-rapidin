@@ -66,12 +66,22 @@ function Regulamento() {
         amanhecer). O Top 10 Atletas mostra a pontuação <strong>acumulada</strong> de toda a promoção.
       </p>
       <p>
-        <strong>[REVISAR COM ADVOGADO — confirmar mecânica final de premiação: (a) os 3 maiores
-        pontuadores do ranking acumulado levam diretamente OU (b) os pontos viram "números da sorte"
-        para um sorteio no fim da campanha. Definir também critério de desempate.]</strong>
+        <strong>Cada ponto acumulado equivale a 1 (um) número da sorte.</strong> Os números da sorte
+        de cada participante serão usados para o sorteio final dos prêmios (item 8). Quanto mais pontos
+        você acumular, mais números receberá e maiores serão suas chances de ganhar.
       </p>
 
-      <h2>7. Prêmios</h2>
+      <h2>7. Chances extras</h2>
+      <p>
+        Conforme item 6, dois movimentos garantem pontos extras (e, portanto, mais números da sorte)
+        sem precisar disputar partidas adicionais:
+      </p>
+      <ul>
+        <li><strong>1 ponto extra</strong> para cada novo assinante que contratar qualquer plano Rapidin durante o período da promoção.</li>
+        <li><strong>1 ponto extra</strong> para clientes ativos cujo boleto de julho seja pago dentro do prazo (mediante opt-in por contrato).</li>
+      </ul>
+
+      <h2>8. Prêmios</h2>
       <ul>
         <li><strong>1º Prêmio:</strong> Smart TV 55" + 1 ano de internet 1000 Mbps + assinatura Premiere.</li>
         <li><strong>2º Prêmio:</strong> Tablet Android + 6 meses de internet 700 Mbps.</li>
@@ -79,19 +89,28 @@ function Regulamento() {
       </ul>
       <p>*Imagens dos prêmios divulgadas são meramente ilustrativas.</p>
 
-      <h2>8. Apuração e entrega</h2>
+      <h2>9. Apuração e sorteio</h2>
       <p>
-        Ao término da promoção, os 3 participantes com maior pontuação total acumulada serão declarados
-        vencedores. A apuração será feita em até <strong>[REVISAR COM ADVOGADO — prazo]</strong> dias após
-        o encerramento, e a entrega dos prêmios ocorrerá no escritório da Rapidin em Balsas/MA, mediante
-        agendamento e apresentação de documento oficial com foto.
+        Ao término da promoção, todos os números da sorte gerados serão submetidos a sorteio
+        público para definição dos 3 ganhadores, sendo o 1º número sorteado o vencedor do 1º prêmio,
+        o 2º o vencedor do 2º prêmio e o 3º o vencedor do 3º prêmio.
       </p>
       <p>
-        Em caso de empate, prevalece quem tiver pontuado por mais dias distintos da promoção.
-        Permanecendo o empate, prevalece o participante com cadastro mais antigo.
+        <strong>Data e local do sorteio:</strong> <strong>[REVISAR COM ADVOGADO — data, local e forma
+        do sorteio (presencial em Balsas, transmissão ao vivo nas redes sociais oficiais, etc.)]</strong>.
+      </p>
+      <p>
+        A entrega dos prêmios ocorrerá no escritório da Rapidin em Balsas/MA em até
+        <strong> [REVISAR COM ADVOGADO — prazo]</strong> dias após o sorteio, mediante agendamento e
+        apresentação de documento oficial com foto.
+      </p>
+      <p>
+        Caso o número da sorte sorteado pertença a um participante desclassificado, ausente ou
+        impossibilitado de receber, será realizado um novo sorteio entre os números restantes para
+        aquele prêmio.
       </p>
 
-      <h2>9. Direito de imagem</h2>
+      <h2>10. Direito de imagem</h2>
       <p>
         Ao participar, o concorrente autoriza a Rapidin a divulgar seu nome, imagem e voz, capturados
         durante a promoção ou na entrega de prêmios, em peças publicitárias da campanha, redes sociais
@@ -99,7 +118,7 @@ function Regulamento() {
         após o encerramento.
       </p>
 
-      <h2>10. Disposições gerais</h2>
+      <h2>11. Disposições gerais</h2>
       <ul>
         <li>Os prêmios não podem ser convertidos em dinheiro nem trocados por outros produtos.</li>
         <li>Em caso de impossibilidade de entrega do prêmio em até 90 dias após a apuração por motivo imputável ao ganhador, o prêmio será revertido para a Rapidin sem qualquer compensação.</li>
@@ -107,13 +126,20 @@ function Regulamento() {
         <li>A Rapidin se reserva o direito de alterar este regulamento a qualquer momento, comunicando as alterações nesta página e em suas redes oficiais.</li>
       </ul>
 
-      <h2>11. Autorização SECAP/Caixa</h2>
+      <h2>12. Autorização SECAP/Caixa — IMPORTANTE</h2>
       <p>
-        <strong>[REVISAR COM ADVOGADO — verificar se a mecânica caracteriza concurso (perícia) ou sorteio.
-        Se sorteio: obter Certificado de Autorização SECAP e citar número aqui. Se concurso de habilidade pura: justificar enquadramento.]</strong>
+        Por se tratar de promoção com <strong>sorteio</strong> (mesmo que precedido de atividade de
+        habilidade), esta campanha caracteriza-se como distribuição gratuita de prêmios mediante
+        sorteio nos termos da Lei 5.768/71 e do Decreto 70.951/72, exigindo prévia autorização da
+        Secretaria de Avaliação de Políticas Públicas, Planejamento, Energia e Loteria (SECAP) ou
+        órgão sucessor antes do início.
+      </p>
+      <p>
+        <strong>[REVISAR COM ADVOGADO — obter Certificado de Autorização junto à SECAP/Loterias Caixa
+        ANTES do início da campanha e citar o número do certificado aqui.]</strong>
       </p>
 
-      <h2>12. Foro</h2>
+      <h2>13. Foro</h2>
       <p>
         Fica eleito o foro da comarca de Balsas/MA para dirimir quaisquer questões oriundas deste
         regulamento, com renúncia expressa a qualquer outro, por mais privilegiado que seja.
