@@ -3,25 +3,23 @@ import { useState } from "react";
 import { AuthGate } from "@/components/admin/AuthGate";
 import { LancarPontos } from "@/components/admin/LancarPontos";
 import { ParticipantesAdmin } from "@/components/admin/Participantes";
-import { BairrosAdmin } from "@/components/admin/Bairros";
 import { BannersAdmin } from "@/components/admin/Banners";
 import { GaleriaAdmin } from "@/components/admin/Galeria";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
-import { LogOut, Target, Users, MapPin, Image as ImageIcon, Camera } from "lucide-react";
+import { LogOut, Target, Users, Image as ImageIcon, Camera } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Painel Admin · Rapidin" }] }),
   component: AdminPage,
 });
 
-type Aba = "lancar" | "participantes" | "bairros" | "banners" | "galeria";
+type Aba = "lancar" | "participantes" | "banners" | "galeria";
 
 const abas: { id: Aba; titulo: string; icon: typeof Target }[] = [
   { id: "lancar", titulo: "Lançar pontos", icon: Target },
   { id: "participantes", titulo: "Participantes", icon: Users },
-  { id: "bairros", titulo: "Bairros", icon: MapPin },
   { id: "banners", titulo: "Banners", icon: ImageIcon },
   { id: "galeria", titulo: "Galeria", icon: Camera },
 ];
@@ -69,7 +67,6 @@ function AdminInner({ userId, email }: { userId: string; email: string }) {
 
         {aba === "lancar" && <LancarPontos userId={userId} />}
         {aba === "participantes" && <ParticipantesAdmin />}
-        {aba === "bairros" && <BairrosAdmin />}
         {aba === "banners" && <BannersAdmin />}
         {aba === "galeria" && <GaleriaAdmin />}
       </div>
