@@ -3,6 +3,7 @@ import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { Beneficios } from "@/components/site/Beneficios";
 import { Ranking } from "@/components/site/Ranking";
+import { TopAtletas } from "@/components/site/TopAtletas";
 import { Premios } from "@/components/site/Premios";
 import { ComoFunciona } from "@/components/site/ComoFunciona";
 import { Participe } from "@/components/site/Participe";
@@ -29,6 +30,7 @@ function Index() {
       <Hero />
       <Beneficios />
       <Ranking />
+      <TopAtletas />
       <Premios />
       <ComoFunciona />
       <Participe />

@@ -15,6 +15,7 @@ export function Header() {
         <nav className="hidden items-center gap-6 md:flex">
           <a href="#inicio" className="text-sm font-semibold hover:underline">Início</a>
           <a href="#ranking" className="text-sm font-semibold hover:underline">Rankings</a>
+          <a href="#atletas" className="text-sm font-semibold hover:underline">Atletas</a>
           <a href="#como-funciona" className="text-sm font-semibold hover:underline">Como Funciona</a>
           <a href="#premiacoes" className="text-sm font-semibold hover:underline">Premiações</a>
           <a href="#duvidas" className="text-sm font-semibold hover:underline">Dúvidas</a>
@@ -43,6 +44,7 @@ export function Header() {
           <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-3">
             <a href="#inicio" onClick={() => setOpen(false)} className="py-2 text-sm font-semibold">Início</a>
             <a href="#ranking" onClick={() => setOpen(false)} className="py-2 text-sm font-semibold">Rankings</a>
+            <a href="#atletas" onClick={() => setOpen(false)} className="py-2 text-sm font-semibold">Atletas</a>
             <a href="#como-funciona" onClick={() => setOpen(false)} className="py-2 text-sm font-semibold">Como Funciona</a>
             <a href="#premiacoes" onClick={() => setOpen(false)} className="py-2 text-sm font-semibold">Premiações</a>
             <a href="#duvidas" onClick={() => setOpen(false)} className="py-2 text-sm font-semibold">Dúvidas</a>
