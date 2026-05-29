@@ -14,17 +14,35 @@ export function AuthGate({ children }: { children: (user: { id: string; email: s
   const [erro, setErro] = useState("");
 
   async function checkSession() {
-    const { data } = await supabase.auth.getSession();
-    if (data.session?.user) {
-      const u = { id: data.session.user.id, email: data.session.user.email ?? "" };
-      setUser(u);
-      const { data: adm } = await supabase.from("admins").select("user_id").eq("user_id", u.id).maybeSingle();
-      setIsAdmin(!!adm);
-    } else {
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data.session?.user) {
+        const u = { id: data.session.user.id, email: data.session.user.email ?? "" };
+        setUser(u);
+        try {
+          const { data: adm } = await supabase
+            .from("admins")
+            .select("user_id")
+            .eq("user_id", u.id)
+            .maybeSingle();
+          setIsAdmin(!!adm);
+        } catch (e) {
+          console.error("admin check falhou", e);
+          setIsAdmin(false);
+        }
+      } else {
+        setUser(null);
+        setIsAdmin(null);
+      }
+    } catch (e) {
+      console.error("session check falhou", e);
       setUser(null);
       setIsAdmin(null);
+      // limpa sessão corrompida
+      try { await supabase.auth.signOut(); } catch {}
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
