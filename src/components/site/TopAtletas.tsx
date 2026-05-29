@@ -29,11 +29,14 @@ export function TopAtletas() {
     <section id="atletas" className="bg-secondary/30 py-12">
       <div className="mx-auto max-w-5xl px-4">
         <div className="mb-6">
+          <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-laranja px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+            Pontuação acumulada · todos os dias somados
+          </div>
           <h2 className="display flex items-center gap-2 text-3xl text-verde md:text-4xl">
             <Trophy className="text-laranja" /> TOP 10 ATLETAS
           </h2>
           <p className="text-sm text-muted-foreground">
-            Quanto mais pontos mais números da sorte você ganha, e tem mais chances de ganhar!
+            Total de pontos desde o início da promoção. Quanto mais pontos, mais números da sorte você ganha — e mais chances de levar um prêmio!
           </p>
         </div>
 
