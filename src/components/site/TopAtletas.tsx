@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase, type Participante } from "@/lib/supabase";
-import { Trophy, Target } from "lucide-react";
+import { asset } from "@/lib/assets";
+import { Target } from "lucide-react";
 
 const medalha = ["🥇", "🥈", "🥉"];
 
@@ -33,7 +34,7 @@ export function TopAtletas() {
             Pontuação acumulada · todos os dias somados
           </div>
           <h2 className="display flex items-center gap-2 text-3xl text-verde md:text-4xl">
-            <Trophy className="text-laranja" /> TOP 10 ATLETAS
+            <img src={asset("/assets/trofeu-copa.png")} alt="" aria-hidden className="h-9 w-auto sm:h-10 md:h-12" /> TOP 10 ATLETAS
           </h2>
           <p className="text-sm text-muted-foreground">
             Total de pontos desde o início da promoção. Quanto mais pontos, mais números da sorte você ganha — e mais chances de levar um prêmio!

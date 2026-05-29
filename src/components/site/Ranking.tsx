@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { asset } from "@/lib/assets";
-import { Trophy, Star, ChevronDown, ChevronUp } from "lucide-react";
+import { Star, ChevronDown, ChevronUp } from "lucide-react";
 
 const medalha = ["🥈", "🥉"];
 
@@ -49,7 +49,7 @@ export function Ranking() {
         <div className="mb-6 flex flex-wrap items-end justify-between gap-2">
           <div>
             <h2 className="display flex items-center gap-2 text-3xl text-verde md:text-4xl">
-              <Trophy className="text-laranja" /> RANKING DA TORCIDA
+              <img src={asset("/assets/trofeu-copa.png")} alt="" aria-hidden className="h-9 w-auto sm:h-10 md:h-12" /> RANKING DA TORCIDA
             </h2>
             <p className="text-sm text-muted-foreground">Pontuação do dia · zera todo amanhecer</p>
           </div>
@@ -60,8 +60,8 @@ export function Ranking() {
 
         {/* 1º lugar = Destaque do dia */}
         {destaque ? (
-          <div className="mb-3 overflow-hidden rounded-3xl border-2 border-laranja bg-gradient-to-br from-laranja via-laranja to-amarelo p-1 shadow-lg">
-            <div className="relative flex items-center gap-4 overflow-hidden rounded-[20px] bg-white p-5 pr-32 sm:gap-6 sm:p-6 sm:pr-48 md:pr-56">
+          <div className="relative mb-3 mt-12 rounded-3xl border-2 border-laranja bg-gradient-to-br from-laranja via-laranja to-amarelo p-1 shadow-lg sm:mt-14">
+            <div className="relative flex min-h-[120px] items-center gap-4 rounded-[20px] bg-white p-5 pr-28 sm:min-h-[150px] sm:gap-6 sm:p-6 sm:pr-44 md:pr-52">
               <div className="flex-1">
                 <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-laranja px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
                   <Star size={12} className="fill-white" /> Destaque do dia · 1º lugar
@@ -77,7 +77,7 @@ export function Ranking() {
                 src={asset("/assets/mascote/mascote-destaque.png")}
                 alt=""
                 aria-hidden
-                className="pointer-events-none absolute -bottom-2 right-0 h-[140%] max-h-[180px] w-auto object-contain drop-shadow-md sm:max-h-[220px] md:max-h-[260px]"
+                className="pointer-events-none absolute bottom-0 right-1 z-10 h-[155px] w-auto object-contain object-bottom drop-shadow-xl sm:right-4 sm:h-[210px] md:h-[240px]"
               />
             </div>
           </div>
