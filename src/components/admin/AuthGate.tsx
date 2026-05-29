@@ -5,6 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 
+// Promete um valor; se demorar mais que ms, lança erro
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Timeout ${label} (${ms}ms)`)), ms)),
+  ]);
+}
+
 export function AuthGate({ children }: { children: (user: { id: string; email: string }) => React.ReactNode }) {
   const [user, setUser] = useState<{ id: string; email: string } | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -14,33 +22,39 @@ export function AuthGate({ children }: { children: (user: { id: string; email: s
   const [erro, setErro] = useState("");
 
   async function checkSession() {
+    console.log("[AuthGate] checkSession start");
     try {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await withTimeout(supabase.auth.getSession(), 8000, "getSession");
+      console.log("[AuthGate] getSession ->", data.session?.user?.email ?? "no session");
       if (data.session?.user) {
         const u = { id: data.session.user.id, email: data.session.user.email ?? "" };
         setUser(u);
         try {
-          const { data: adm } = await supabase
-            .from("admins")
-            .select("user_id")
-            .eq("user_id", u.id)
-            .maybeSingle();
+          const { data: adm, error } = await withTimeout(
+            supabase.from("admins").select("user_id").eq("user_id", u.id).maybeSingle(),
+            8000,
+            "admins"
+          );
+          if (error) console.error("[AuthGate] admins query error", error);
+          console.log("[AuthGate] is admin?", !!adm);
           setIsAdmin(!!adm);
         } catch (e) {
-          console.error("admin check falhou", e);
+          console.error("[AuthGate] admin check falhou", e);
           setIsAdmin(false);
+          setErro("Não consegui validar permissão de admin. Tenta de novo.");
         }
       } else {
         setUser(null);
         setIsAdmin(null);
       }
     } catch (e) {
-      console.error("session check falhou", e);
+      console.error("[AuthGate] session check falhou", e);
       setUser(null);
       setIsAdmin(null);
-      // limpa sessão corrompida
+      setErro("Conexão com servidor de autenticação falhou. Recarregue a página.");
       try { await supabase.auth.signOut(); } catch {}
     } finally {
+      console.log("[AuthGate] checkSession end -> loading=false");
       setLoading(false);
     }
   }
@@ -55,9 +69,22 @@ export function AuthGate({ children }: { children: (user: { id: string; email: s
     e.preventDefault();
     setErro("");
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
-    if (error) setErro("E-mail ou senha incorretos.");
-    setLoading(false);
+    try {
+      const { error } = await withTimeout(
+        supabase.auth.signInWithPassword({ email, password: senha }),
+        10000,
+        "signIn"
+      );
+      if (error) {
+        console.error("[AuthGate] login error", error);
+        setErro(error.message === "Invalid login credentials" ? "E-mail ou senha incorretos." : error.message);
+      }
+    } catch (e) {
+      console.error("[AuthGate] login timeout/falha", e);
+      setErro("Conexão com servidor demorou demais. Tente de novo.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function logout() {
