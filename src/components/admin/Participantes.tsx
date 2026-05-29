@@ -3,17 +3,28 @@ import { supabase, type Participante } from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatarCpf, formatarTel } from "@/lib/validators";
-import { Trash2, UserPlus, FileSpreadsheet } from "lucide-react";
+import { Trash2, UserPlus, FileSpreadsheet, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import { CadastroParticipante } from "./CadastroParticipante";
-import { exportarParticipantesExcel } from "@/lib/exportarExcel";
+import {
+  exportarRelatorioGeral,
+  exportarRelatorioDoDia,
+  type LinhaHojeExport,
+} from "@/lib/exportarExcel";
 import { useAdminRole } from "@/lib/useAdminRole";
+
+type LinhaHojeView = {
+  participante_id: string;
+  nome: string;
+  pontos_hoje: number;
+};
 
 export function ParticipantesAdmin() {
   const [lista, setLista] = useState<Participante[]>([]);
   const [filtro, setFiltro] = useState("");
   const [showCadastro, setShowCadastro] = useState(false);
-  const [exportando, setExportando] = useState(false);
+  const [exportandoGeral, setExportandoGeral] = useState(false);
+  const [exportandoDia, setExportandoDia] = useState(false);
   const { role } = useAdminRole();
   const podeExportar = role === "master";
 
@@ -41,20 +52,56 @@ export function ParticipantesAdmin() {
     return p.nome.toLowerCase().includes(f) || p.telefone.includes(filtro) || p.cpf.includes(filtro);
   });
 
-  async function exportar() {
+  async function exportarGeral() {
     if (lista.length === 0) {
       toast.error("Nenhum participante para exportar");
       return;
     }
-    setExportando(true);
+    setExportandoGeral(true);
     try {
-      await exportarParticipantesExcel(lista);
-      toast.success(`${lista.length} participantes exportados`);
+      await exportarRelatorioGeral(lista);
+      toast.success(`Relatório geral exportado (${lista.length} participantes)`);
     } catch (e) {
       console.error(e);
-      toast.error("Falha ao exportar Excel");
+      toast.error("Falha ao gerar relatório geral");
     } finally {
-      setExportando(false);
+      setExportandoGeral(false);
+    }
+  }
+
+  async function exportarDoDia() {
+    setExportandoDia(true);
+    try {
+      const { data, error } = await supabase
+        .from("v_ranking_hoje")
+        .select("participante_id, nome, pontos_hoje")
+        .limit(1000);
+      if (error) throw error;
+      const linhasHoje = (data ?? []) as LinhaHojeView[];
+
+      // Cruzar com participantes (que já tem phone/cpf carregados em memória)
+      const porId = new Map(lista.map((p) => [p.id, p]));
+      const linhasExport: LinhaHojeExport[] = linhasHoje.map((l) => {
+        const p = porId.get(l.participante_id);
+        return {
+          nome: l.nome,
+          telefone: p?.telefone ?? "",
+          cpf: p?.cpf ?? "",
+          pontos_hoje: l.pontos_hoje,
+        };
+      });
+
+      await exportarRelatorioDoDia(linhasExport);
+      if (linhasExport.length === 0) {
+        toast.info("Ninguém pontuou hoje ainda — relatório gerado vazio");
+      } else {
+        toast.success(`Relatório do dia exportado (${linhasExport.length} pessoas)`);
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Falha ao gerar relatório do dia");
+    } finally {
+      setExportandoDia(false);
     }
   }
 
@@ -71,15 +118,26 @@ export function ParticipantesAdmin() {
             <UserPlus size={16} /> Cadastrar novo participante
           </Button>
           {podeExportar && (
-            <Button
-              onClick={exportar}
-              disabled={exportando || lista.length === 0}
-              variant="outline"
-              className="border-verde text-verde hover:bg-verde/10"
-            >
-              <FileSpreadsheet size={16} />
-              {exportando ? "Exportando..." : "Exportar para Excel"}
-            </Button>
+            <>
+              <Button
+                onClick={exportarGeral}
+                disabled={exportandoGeral || lista.length === 0}
+                variant="outline"
+                className="border-verde text-verde hover:bg-verde/10"
+              >
+                <FileSpreadsheet size={16} />
+                {exportandoGeral ? "Gerando..." : "Relatório geral"}
+              </Button>
+              <Button
+                onClick={exportarDoDia}
+                disabled={exportandoDia}
+                variant="outline"
+                className="border-laranja text-laranja hover:bg-laranja/10"
+              >
+                <CalendarDays size={16} />
+                {exportandoDia ? "Gerando..." : "Relatório do dia"}
+              </Button>
+            </>
           )}
         </div>
       )}

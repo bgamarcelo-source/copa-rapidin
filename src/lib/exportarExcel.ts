@@ -9,100 +9,120 @@ const AMARELO = "FFFFC72C";
 const CINZA_CLARO = "FFF5F5F5";
 const BRANCO = "FFFFFFFF";
 
-export async function exportarParticipantesExcel(lista: Participante[]) {
+type LinhaRelatorio = {
+  nome: string;
+  telefone: string;
+  cpf: string;
+  pontos: number;
+  created_at?: string | null;
+};
+
+type Config = {
+  abaNome: string; // nome da aba
+  tituloPlanilha: string; // título do workbook
+  tituloTopo: string; // linha 1
+  subtitulo: string; // linha 2
+  rotuloPontos: string; // header da coluna de pontos
+  mostrarNumerosDaSorte: boolean; // só faz sentido no relatório geral
+  mostrarCadastro: boolean; // só faz sentido no relatório geral
+  nomeArquivo: string;
+};
+
+function baixar(buffer: ArrayBuffer, nomeArquivo: string) {
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nomeArquivo;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function gerarPlanilha(linhas: LinhaRelatorio[], cfg: Config) {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = "Copa Rapidin";
   workbook.created = new Date();
-  workbook.title = "Participantes - Copa Rapidin";
+  workbook.title = cfg.tituloPlanilha;
 
-  const sheet = workbook.addWorksheet("Participantes", {
+  const sheet = workbook.addWorksheet(cfg.abaNome, {
     views: [{ state: "frozen", ySplit: 4 }],
   });
 
-  // Larguras das colunas
-  sheet.columns = [
+  // Configura colunas conforme o tipo de relatório
+  const colunas: Partial<ExcelJS.Column>[] = [
     { key: "pos", width: 8 },
     { key: "nome", width: 38 },
     { key: "telefone", width: 20 },
     { key: "cpf", width: 18 },
-    { key: "pontos", width: 14 },
-    { key: "numeros", width: 18 },
-    { key: "cadastro", width: 22 },
+    { key: "pontos", width: 16 },
   ];
+  if (cfg.mostrarNumerosDaSorte) colunas.push({ key: "numeros", width: 18 });
+  if (cfg.mostrarCadastro) colunas.push({ key: "cadastro", width: 22 });
+  sheet.columns = colunas;
 
-  // --- Linha 1: Título grande ---
-  sheet.mergeCells("A1:G1");
+  const totalCols = colunas.length;
+  const ultimaColLetra = String.fromCharCode("A".charCodeAt(0) + totalCols - 1);
+
+  // --- Linha 1: Título ---
+  sheet.mergeCells(`A1:${ultimaColLetra}1`);
   const titulo = sheet.getCell("A1");
-  titulo.value = "COPA RAPIDIN · PARTICIPANTES";
+  titulo.value = cfg.tituloTopo;
   titulo.font = { name: "Calibri", size: 20, bold: true, color: { argb: BRANCO } };
   titulo.alignment = { vertical: "middle", horizontal: "center" };
-  titulo.fill = {
-    type: "pattern",
-    pattern: "solid",
-    fgColor: { argb: VERDE },
-  };
+  titulo.fill = { type: "pattern", pattern: "solid", fgColor: { argb: VERDE } };
   sheet.getRow(1).height = 36;
 
-  // --- Linha 2: Subtítulo com data e total ---
-  sheet.mergeCells("A2:G2");
+  // --- Linha 2: Subtítulo ---
+  sheet.mergeCells(`A2:${ultimaColLetra}2`);
   const sub = sheet.getCell("A2");
-  const agora = new Date();
-  const dataStr = agora.toLocaleDateString("pt-BR");
-  const horaStr = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-  sub.value = `Exportado em ${dataStr} às ${horaStr}  ·  Total: ${lista.length} participante${lista.length === 1 ? "" : "s"}`;
+  sub.value = cfg.subtitulo;
   sub.font = { name: "Calibri", size: 11, italic: true, color: { argb: "FF555555" } };
   sub.alignment = { vertical: "middle", horizontal: "center" };
-  sub.fill = {
-    type: "pattern",
-    pattern: "solid",
-    fgColor: { argb: AMARELO },
-  };
+  sub.fill = { type: "pattern", pattern: "solid", fgColor: { argb: AMARELO } };
   sheet.getRow(2).height = 22;
 
-  // --- Linha 3: vazia (respiro) ---
+  // --- Linha 3: respiro ---
   sheet.getRow(3).height = 8;
 
-  // --- Linha 4: Cabeçalho da tabela ---
+  // --- Linha 4: cabeçalho ---
+  const headers: string[] = ["#", "Nome", "Telefone", "CPF", cfg.rotuloPontos];
+  if (cfg.mostrarNumerosDaSorte) headers.push("Números da Sorte");
+  if (cfg.mostrarCadastro) headers.push("Cadastrado em");
+
   const headerRow = sheet.getRow(4);
-  headerRow.values = [
-    "#",
-    "Nome",
-    "Telefone",
-    "CPF",
-    "Pontos Totais",
-    "Números da Sorte",
-    "Cadastrado em",
-  ];
+  headerRow.values = headers;
   headerRow.height = 28;
   headerRow.eachCell((cell) => {
     cell.font = { name: "Calibri", size: 11, bold: true, color: { argb: BRANCO } };
     cell.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
-    cell.fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: LARANJA },
-    };
+    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: LARANJA } };
     cell.border = {
-      top: { style: "thin", color: { argb: "FFFFFFFF" } },
-      left: { style: "thin", color: { argb: "FFFFFFFF" } },
-      bottom: { style: "thin", color: { argb: "FFFFFFFF" } },
-      right: { style: "thin", color: { argb: "FFFFFFFF" } },
+      top: { style: "thin", color: { argb: BRANCO } },
+      left: { style: "thin", color: { argb: BRANCO } },
+      bottom: { style: "thin", color: { argb: BRANCO } },
+      right: { style: "thin", color: { argb: BRANCO } },
     };
   });
 
-  // Ordenar por pontos desc (já vem ordenado, mas garantia)
-  const ordenado = [...lista].sort((a, b) => b.pontos_total - a.pontos_total);
+  // Ordenado por pontos desc (garantia)
+  const ordenado = [...linhas].sort((a, b) => b.pontos - a.pontos);
 
-  // --- Linhas de dados ---
+  // --- Dados ---
   ordenado.forEach((p, i) => {
-    const row = sheet.addRow({
+    const dados: Record<string, string | number> = {
       pos: i + 1,
       nome: p.nome,
       telefone: formatarTel(p.telefone || ""),
       cpf: formatarCpf(p.cpf || ""),
-      pontos: p.pontos_total ?? 0,
-      numeros: p.pontos_total ?? 0,
-      cadastro: p.created_at
+      pontos: p.pontos ?? 0,
+    };
+    if (cfg.mostrarNumerosDaSorte) dados.numeros = p.pontos ?? 0;
+    if (cfg.mostrarCadastro) {
+      dados.cadastro = p.created_at
         ? new Date(p.created_at).toLocaleString("pt-BR", {
             day: "2-digit",
             month: "2-digit",
@@ -110,8 +130,9 @@ export async function exportarParticipantesExcel(lista: Participante[]) {
             hour: "2-digit",
             minute: "2-digit",
           })
-        : "",
-    });
+        : "";
+    }
+    const row = sheet.addRow(dados);
 
     row.height = 20;
     row.eachCell((cell, colNumber) => {
@@ -128,18 +149,12 @@ export async function exportarParticipantesExcel(lista: Participante[]) {
       };
     });
 
-    // Zebra
     if (i % 2 === 1) {
       row.eachCell((cell) => {
-        cell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: CINZA_CLARO },
-        };
+        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: CINZA_CLARO } };
       });
     }
 
-    // Destaque pro Top 3
     if (i < 3) {
       const medalha = ["🥇", "🥈", "🥉"][i];
       const posCell = row.getCell("pos");
@@ -155,75 +170,111 @@ export async function exportarParticipantesExcel(lista: Participante[]) {
     }
   });
 
-  // --- Rodapé com totais ---
+  // --- Rodapé total ---
   const totalLinha = sheet.addRow({});
-  totalLinha.getCell("pos").value = "";
   const totalLabel = totalLinha.getCell("nome");
   totalLabel.value = "TOTAL GERAL";
   totalLabel.font = { name: "Calibri", size: 11, bold: true, color: { argb: BRANCO } };
   totalLabel.alignment = { vertical: "middle", horizontal: "right" };
-  totalLabel.fill = {
-    type: "pattern",
-    pattern: "solid",
-    fgColor: { argb: VERDE },
-  };
 
-  const totalPontos = ordenado.reduce((acc, p) => acc + (p.pontos_total ?? 0), 0);
+  const totalPontos = ordenado.reduce((acc, p) => acc + (p.pontos ?? 0), 0);
   const totalPontosCell = totalLinha.getCell("pontos");
   totalPontosCell.value = totalPontos;
   totalPontosCell.font = { name: "Calibri", size: 12, bold: true, color: { argb: BRANCO } };
   totalPontosCell.alignment = { vertical: "middle", horizontal: "center" };
-  totalPontosCell.fill = {
-    type: "pattern",
-    pattern: "solid",
-    fgColor: { argb: VERDE },
-  };
 
-  const totalNumerosCell = totalLinha.getCell("numeros");
-  totalNumerosCell.value = totalPontos;
-  totalNumerosCell.font = { name: "Calibri", size: 12, bold: true, color: { argb: BRANCO } };
-  totalNumerosCell.alignment = { vertical: "middle", horizontal: "center" };
-  totalNumerosCell.fill = {
-    type: "pattern",
-    pattern: "solid",
-    fgColor: { argb: VERDE },
-  };
+  if (cfg.mostrarNumerosDaSorte) {
+    const totalNumerosCell = totalLinha.getCell("numeros");
+    totalNumerosCell.value = totalPontos;
+    totalNumerosCell.font = { name: "Calibri", size: 12, bold: true, color: { argb: BRANCO } };
+    totalNumerosCell.alignment = { vertical: "middle", horizontal: "center" };
+  }
 
-  // Pintar células vazias do total
-  [3, 4, 7].forEach((col) => {
-    const cell = totalLinha.getCell(col);
-    cell.fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: VERDE },
-    };
-  });
-  totalLinha.getCell("pos").fill = {
-    type: "pattern",
-    pattern: "solid",
-    fgColor: { argb: VERDE },
-  };
+  // Pinta toda a linha de verde
+  for (let c = 1; c <= totalCols; c++) {
+    const cell = totalLinha.getCell(c);
+    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: VERDE } };
+  }
   totalLinha.height = 24;
 
-  // Autofiltro no cabeçalho da tabela
+  // Autofiltro
   sheet.autoFilter = {
     from: { row: 4, column: 1 },
-    to: { row: 4 + ordenado.length, column: 7 },
+    to: { row: 4 + ordenado.length, column: totalCols },
   };
 
-  // Gerar arquivo
-  const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
+  // Estado vazio (sem registros) — adiciona uma linha amigável
+  if (ordenado.length === 0) {
+    const vazia = sheet.addRow({});
+    sheet.mergeCells(`A${vazia.number}:${ultimaColLetra}${vazia.number}`);
+    const cell = vazia.getCell("A");
+    cell.value = "Sem registros para este relatório.";
+    cell.font = { name: "Calibri", size: 11, italic: true, color: { argb: "FF888888" } };
+    cell.alignment = { vertical: "middle", horizontal: "center" };
+    vazia.height = 28;
+  }
 
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  const dataNomeArq = agora.toISOString().slice(0, 10);
-  a.href = url;
-  a.download = `participantes-copa-rapidin-${dataNomeArq}.xlsx`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const buffer = await workbook.xlsx.writeBuffer();
+  baixar(buffer, cfg.nomeArquivo);
+}
+
+// =============================================================
+// Relatório Geral — todos os participantes, pontos acumulados
+// =============================================================
+export async function exportarRelatorioGeral(lista: Participante[]) {
+  const agora = new Date();
+  const dataStr = agora.toLocaleDateString("pt-BR");
+  const horaStr = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  const linhas: LinhaRelatorio[] = lista.map((p) => ({
+    nome: p.nome,
+    telefone: p.telefone,
+    cpf: p.cpf,
+    pontos: p.pontos_total ?? 0,
+    created_at: p.created_at,
+  }));
+
+  await gerarPlanilha(linhas, {
+    abaNome: "Geral",
+    tituloPlanilha: "Relatório Geral - Copa Rapidin",
+    tituloTopo: "COPA RAPIDIN · RELATÓRIO GERAL",
+    subtitulo: `Pontos acumulados · Exportado em ${dataStr} às ${horaStr}  ·  Total: ${lista.length} participante${lista.length === 1 ? "" : "s"}`,
+    rotuloPontos: "Pontos Totais",
+    mostrarNumerosDaSorte: true,
+    mostrarCadastro: true,
+    nomeArquivo: `relatorio-geral-copa-rapidin-${agora.toISOString().slice(0, 10)}.xlsx`,
+  });
+}
+
+// =============================================================
+// Relatório do Dia — só quem pontuou hoje (ranking da torcida)
+// =============================================================
+export type LinhaHojeExport = {
+  nome: string;
+  telefone: string;
+  cpf: string;
+  pontos_hoje: number;
+};
+
+export async function exportarRelatorioDoDia(lista: LinhaHojeExport[]) {
+  const agora = new Date();
+  const dataStr = agora.toLocaleDateString("pt-BR");
+  const horaStr = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+
+  const linhas: LinhaRelatorio[] = lista.map((p) => ({
+    nome: p.nome,
+    telefone: p.telefone,
+    cpf: p.cpf,
+    pontos: p.pontos_hoje ?? 0,
+  }));
+
+  await gerarPlanilha(linhas, {
+    abaNome: "Ranking do dia",
+    tituloPlanilha: "Relatório do Dia - Copa Rapidin",
+    tituloTopo: `COPA RAPIDIN · RANKING DO DIA — ${dataStr}`,
+    subtitulo: `Pontos do dia (zera todo amanhecer) · Exportado às ${horaStr}  ·  ${lista.length} participante${lista.length === 1 ? "" : "s"} pontuaram hoje`,
+    rotuloPontos: "Pontos Hoje",
+    mostrarNumerosDaSorte: false,
+    mostrarCadastro: false,
+    nomeArquivo: `relatorio-do-dia-copa-rapidin-${agora.toISOString().slice(0, 10)}.xlsx`,
+  });
 }
