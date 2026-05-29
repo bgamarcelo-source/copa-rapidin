@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase, type Participante } from "@/lib/supabase";
+import { hojeBR } from "@/lib/assets";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -12,7 +13,7 @@ export function DestaqueAdmin({ userId }: { userId: string }) {
   const [pontos, setPontos] = useState(0);
   const [atual, setAtual] = useState<{ nome: string; pontos: number } | null>(null);
 
-  const hoje = new Date().toISOString().slice(0, 10);
+  const hoje = hojeBR();
 
   async function load() {
     const { data } = await supabase

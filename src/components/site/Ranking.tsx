@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase, type Participante } from "@/lib/supabase";
+import { hojeBR } from "@/lib/assets";
 import { Trophy, Star } from "lucide-react";
 
 const medalha = ["🥇", "🥈", "🥉"];
@@ -21,7 +22,7 @@ export function Ranking() {
   const [atualizado, setAtualizado] = useState<Date>(new Date());
 
   async function load() {
-    const hoje = new Date().toISOString().slice(0, 10);
+    const hoje = hojeBR();
     const [r, d] = await Promise.all([
       supabase
         .from("v_ranking_hoje")
