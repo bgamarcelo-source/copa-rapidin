@@ -22,7 +22,7 @@ export function Header() {
         </nav>
 
         <a
-          href="https://rapidin.com.br"
+          href="https://www.rapidin.net.br/"
           target="_blank"
           rel="noreferrer"
           className="hidden rounded-full bg-white px-5 py-2 text-sm font-bold text-laranja shadow hover:bg-amarelo md:inline-block"
@@ -49,7 +49,7 @@ export function Header() {
             <a href="#premiacoes" onClick={() => setOpen(false)} className="py-2 text-sm font-semibold">Premiações</a>
             <a href="#duvidas" onClick={() => setOpen(false)} className="py-2 text-sm font-semibold">Dúvidas</a>
             <a
-              href="https://rapidin.com.br"
+              href="https://www.rapidin.net.br/"
               target="_blank"
               rel="noreferrer"
               className="mt-2 rounded-full bg-white px-5 py-2 text-center text-sm font-bold text-laranja"

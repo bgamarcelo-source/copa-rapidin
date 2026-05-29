@@ -16,7 +16,7 @@ export function Participe() {
             Quero participar
           </Link>
           <a
-            href="https://rapidin.com.br"
+            href="https://www.rapidin.net.br/"
             target="_blank"
             rel="noreferrer"
             className="rounded-full border-2 border-white px-8 py-3 text-base font-bold text-white hover:bg-white hover:text-laranja"
