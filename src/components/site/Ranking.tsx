@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase, type Participante } from "@/lib/supabase";
-import { hojeBR } from "@/lib/assets";
+import { supabase } from "@/lib/supabase";
 import { Trophy, Star } from "lucide-react";
 
 const medalha = ["🥇", "🥈", "🥉"];
@@ -9,34 +8,19 @@ type LinhaHoje = {
   participante_id: string;
   nome: string;
   pontos_hoje: number;
-};
-
-type DestaqueRow = {
-  pontos_hoje: number;
-  participante: (Participante & { bairro?: { nome: string } | null }) | null;
+  foto_url: string | null;
 };
 
 export function Ranking() {
   const [ranking, setRanking] = useState<LinhaHoje[]>([]);
-  const [destaque, setDestaque] = useState<DestaqueRow | null>(null);
   const [atualizado, setAtualizado] = useState<Date>(new Date());
 
   async function load() {
-    const hoje = hojeBR();
-    const [r, d] = await Promise.all([
-      supabase
-        .from("v_ranking_hoje")
-        .select("participante_id, nome, pontos_hoje")
-        .limit(10),
-      supabase
-        .from("destaque_do_dia")
-        .select("pontos_hoje, participante:participantes(*, bairro:bairros(nome))")
-        .eq("data", hoje)
-        .maybeSingle(),
-    ]);
-    if (r.data) setRanking(r.data as LinhaHoje[]);
-    if (d.data) setDestaque(d.data as DestaqueRow);
-    else setDestaque(null);
+    const { data } = await supabase
+      .from("v_ranking_hoje")
+      .select("participante_id, nome, pontos_hoje, foto_url")
+      .limit(10);
+    if (data) setRanking(data as LinhaHoje[]);
     setAtualizado(new Date());
   }
 
@@ -45,12 +29,13 @@ export function Ranking() {
     const ch = supabase
       .channel("ranking-hoje")
       .on("postgres_changes", { event: "*", schema: "public", table: "eventos_pontuacao" }, () => load())
-      .on("postgres_changes", { event: "*", schema: "public", table: "destaque_do_dia" }, () => load())
       .subscribe();
     return () => {
       supabase.removeChannel(ch);
     };
   }, []);
+
+  const destaque = ranking[0] ?? null;
 
   return (
     <section id="ranking" className="bg-white py-12">
@@ -99,22 +84,22 @@ export function Ranking() {
               <div className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-laranja">
                 <Star size={14} className="fill-laranja" /> Destaque do dia
               </div>
-              {destaque?.participante ? (
+              {destaque ? (
                 <div className="flex items-center gap-3">
-                  {destaque.participante.foto_url ? (
-                    <img src={destaque.participante.foto_url} alt="" className="h-14 w-14 rounded-full object-cover ring-2 ring-laranja" />
+                  {destaque.foto_url ? (
+                    <img src={destaque.foto_url} alt="" className="h-14 w-14 rounded-full object-cover ring-2 ring-laranja" />
                   ) : (
                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-laranja text-xl font-bold text-white">
-                      {destaque.participante.nome[0]}
+                      {destaque.nome[0]}
                     </div>
                   )}
                   <div>
-                    <div className="font-bold">{destaque.participante.nome}</div>
+                    <div className="font-bold">{destaque.nome}</div>
                     <div className="text-sm font-bold text-laranja">{destaque.pontos_hoje} pontos hoje</div>
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">Aguardando destaque de hoje</p>
+                <p className="text-sm text-muted-foreground">Aguardando primeiro chute do dia</p>
               )}
             </div>
           </div>
