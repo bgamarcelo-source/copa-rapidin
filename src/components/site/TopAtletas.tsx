@@ -4,10 +4,8 @@ import { Trophy, Target } from "lucide-react";
 
 const medalha = ["🥇", "🥈", "🥉"];
 
-type Linha = Participante;
-
 export function TopAtletas() {
-  const [atletas, setAtletas] = useState<Linha[]>([]);
+  const [atletas, setAtletas] = useState<Participante[]>([]);
 
   async function load() {
     const { data } = await supabase
@@ -15,7 +13,7 @@ export function TopAtletas() {
       .select("*")
       .order("pontos_total", { ascending: false })
       .limit(10);
-    if (data) setAtletas(data as Linha[]);
+    if (data) setAtletas(data);
   }
 
   useEffect(() => {
@@ -29,56 +27,53 @@ export function TopAtletas() {
 
   return (
     <section id="atletas" className="bg-secondary/30 py-12">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-2">
-          <div>
-            <h2 className="display flex items-center gap-2 text-3xl text-verde md:text-4xl">
-              <Trophy className="text-laranja" /> TOP 10 ATLETAS
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Quanto mais pontos mais números da sorte você ganha, e tem mais chances de ganhar!
-            </p>
+      <div className="mx-auto max-w-5xl px-4">
+        <div className="mb-6">
+          <h2 className="display flex items-center gap-2 text-3xl text-verde md:text-4xl">
+            <Trophy className="text-laranja" /> TOP 10 ATLETAS
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Quanto mais pontos mais números da sorte você ganha, e tem mais chances de ganhar!
+          </p>
+        </div>
+
+        {atletas.length === 0 ? (
+          <div className="rounded-2xl border-2 border-dashed border-muted-foreground/30 bg-white p-10 text-center">
+            <Target className="mx-auto mb-2 text-laranja/40" size={32} />
+            <p className="text-sm font-medium text-muted-foreground">Ninguém pontuou ainda. Seja o primeiro!</p>
           </div>
-        </div>
-
-        <div className="overflow-hidden rounded-2xl border-2 border-laranja/20 bg-white shadow-sm">
-          <table className="w-full text-sm">
-            <thead className="bg-laranja text-white">
-              <tr>
-                <th className="px-3 py-3 text-left">POSIÇÃO</th>
-                <th className="px-3 py-3 text-left">ATLETA</th>
-                <th className="px-3 py-3 text-right">PONTOS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {atletas.map((a, i) => (
-                <tr
+        ) : (
+          <ol className="space-y-2">
+            {atletas.map((a, i) => {
+              const top3 = i < 3;
+              return (
+                <li
                   key={a.id}
-                  className={`${i % 2 === 0 ? "bg-white" : "bg-secondary/30"} ${i < 3 ? "font-bold" : ""}`}
+                  className={`flex items-center gap-4 rounded-2xl px-4 py-3 shadow-sm transition ${
+                    top3
+                      ? "bg-white ring-2 ring-laranja/30"
+                      : "bg-white/80"
+                  }`}
                 >
-                  <td className="px-3 py-3">
-                    {i < 3 ? (
-                      <span className="text-2xl">{medalha[i]}</span>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+                    {top3 ? (
+                      <span className="text-3xl leading-none">{medalha[i]}</span>
                     ) : (
-                      <span className="text-muted-foreground">{i + 1}º</span>
+                      <span className="display text-xl text-muted-foreground">{i + 1}º</span>
                     )}
-                  </td>
-                  <td className="px-3 py-3">{a.nome}</td>
-                  <td className="px-3 py-3 text-right text-laranja">{a.pontos_total.toLocaleString("pt-BR")}</td>
-                </tr>
-              ))}
-              {atletas.length === 0 && (
-                <tr>
-                  <td colSpan={3} className="px-3 py-10 text-center text-muted-foreground">
-                    <Target className="mx-auto mb-2 text-laranja/50" size={32} />
-                    Ninguém pontuou ainda. Seja o primeiro!
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
+                  </div>
+                  <span className={`flex-1 truncate ${top3 ? "font-bold" : "font-medium"}`}>{a.nome}</span>
+                  <span className="flex items-baseline gap-1 tabular-nums">
+                    <span className={`font-bold text-laranja ${top3 ? "text-2xl" : "text-lg"}`}>
+                      {a.pontos_total.toLocaleString("pt-BR")}
+                    </span>
+                    <span className="text-xs font-medium uppercase text-muted-foreground">pts</span>
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        )}
       </div>
     </section>
   );
