@@ -7,12 +7,15 @@ import { Trash2, UserPlus, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
 import { CadastroParticipante } from "./CadastroParticipante";
 import { exportarParticipantesExcel } from "@/lib/exportarExcel";
+import { useAdminRole } from "@/lib/useAdminRole";
 
 export function ParticipantesAdmin() {
   const [lista, setLista] = useState<Participante[]>([]);
   const [filtro, setFiltro] = useState("");
   const [showCadastro, setShowCadastro] = useState(false);
   const [exportando, setExportando] = useState(false);
+  const { role } = useAdminRole();
+  const podeExportar = role === "master";
 
   async function load() {
     const { data } = await supabase
@@ -67,15 +70,17 @@ export function ParticipantesAdmin() {
           <Button onClick={() => setShowCadastro(true)} className="bg-laranja hover:bg-laranja-dark">
             <UserPlus size={16} /> Cadastrar novo participante
           </Button>
-          <Button
-            onClick={exportar}
-            disabled={exportando || lista.length === 0}
-            variant="outline"
-            className="border-verde text-verde hover:bg-verde/10"
-          >
-            <FileSpreadsheet size={16} />
-            {exportando ? "Exportando..." : "Exportar para Excel"}
-          </Button>
+          {podeExportar && (
+            <Button
+              onClick={exportar}
+              disabled={exportando || lista.length === 0}
+              variant="outline"
+              className="border-verde text-verde hover:bg-verde/10"
+            >
+              <FileSpreadsheet size={16} />
+              {exportando ? "Exportando..." : "Exportar para Excel"}
+            </Button>
+          )}
         </div>
       )}
 
