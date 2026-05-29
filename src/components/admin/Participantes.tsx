@@ -13,11 +13,22 @@ import {
 } from "@/lib/exportarExcel";
 import { useAdminRole } from "@/lib/useAdminRole";
 
-type LinhaHojeView = {
-  participante_id: string;
-  nome: string;
-  pontos_hoje: number;
-};
+function hojeEmBalsas(): string {
+  // ISO yyyy-mm-dd no fuso America/Sao_Paulo (Balsas/MA é -03:00 sem DST)
+  const fmt = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  return fmt.format(new Date());
+}
+
+function formatarDataBR(iso: string): string {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
 
 export function ParticipantesAdmin() {
   const [lista, setLista] = useState<Participante[]>([]);
@@ -25,8 +36,11 @@ export function ParticipantesAdmin() {
   const [showCadastro, setShowCadastro] = useState(false);
   const [exportandoGeral, setExportandoGeral] = useState(false);
   const [exportandoDia, setExportandoDia] = useState(false);
+  const [dataRelatorio, setDataRelatorio] = useState<string>(hojeEmBalsas());
   const { role } = useAdminRole();
   const podeExportar = role === "master";
+  const hojeIso = hojeEmBalsas();
+  const ehHoje = dataRelatorio === hojeIso;
 
   async function load() {
     const { data } = await supabase
@@ -70,32 +84,46 @@ export function ParticipantesAdmin() {
   }
 
   async function exportarDoDia() {
+    if (!dataRelatorio) {
+      toast.error("Escolha uma data");
+      return;
+    }
     setExportandoDia(true);
     try {
+      // Busca todos os eventos do dia escolhido (RLS admin libera leitura)
       const { data, error } = await supabase
-        .from("v_ranking_hoje")
-        .select("participante_id, nome, pontos_hoje")
-        .limit(1000);
+        .from("eventos_pontuacao")
+        .select("participante_id, pontos")
+        .eq("data", dataRelatorio);
       if (error) throw error;
-      const linhasHoje = (data ?? []) as LinhaHojeView[];
 
-      // Cruzar com participantes (que já tem phone/cpf carregados em memória)
+      // Agrega por participante
+      const acc = new Map<string, number>();
+      for (const e of (data ?? []) as { participante_id: string; pontos: number }[]) {
+        acc.set(e.participante_id, (acc.get(e.participante_id) ?? 0) + (e.pontos ?? 0));
+      }
+
+      // Cruza com participantes (nome/telefone/cpf já em memória)
       const porId = new Map(lista.map((p) => [p.id, p]));
-      const linhasExport: LinhaHojeExport[] = linhasHoje.map((l) => {
-        const p = porId.get(l.participante_id);
-        return {
-          nome: l.nome,
-          telefone: p?.telefone ?? "",
-          cpf: p?.cpf ?? "",
-          pontos_hoje: l.pontos_hoje,
-        };
-      });
+      const linhasExport: LinhaHojeExport[] = [...acc.entries()]
+        .map(([pid, pts]) => {
+          const p = porId.get(pid);
+          return {
+            nome: p?.nome ?? "(participante removido)",
+            telefone: p?.telefone ?? "",
+            cpf: p?.cpf ?? "",
+            pontos_hoje: pts,
+          };
+        })
+        .sort((a, b) => b.pontos_hoje - a.pontos_hoje);
 
-      await exportarRelatorioDoDia(linhasExport);
+      await exportarRelatorioDoDia(linhasExport, dataRelatorio);
       if (linhasExport.length === 0) {
-        toast.info("Ninguém pontuou hoje ainda — relatório gerado vazio");
+        toast.info(`Ninguém pontuou em ${formatarDataBR(dataRelatorio)} — relatório gerado vazio`);
       } else {
-        toast.success(`Relatório do dia exportado (${linhasExport.length} pessoas)`);
+        toast.success(
+          `Relatório de ${formatarDataBR(dataRelatorio)} exportado (${linhasExport.length} pessoas)`,
+        );
       }
     } catch (e) {
       console.error(e);
@@ -128,15 +156,29 @@ export function ParticipantesAdmin() {
                 <FileSpreadsheet size={16} />
                 {exportandoGeral ? "Gerando..." : "Relatório geral"}
               </Button>
-              <Button
-                onClick={exportarDoDia}
-                disabled={exportandoDia}
-                variant="outline"
-                className="border-laranja text-laranja hover:bg-laranja/10"
-              >
-                <CalendarDays size={16} />
-                {exportandoDia ? "Gerando..." : "Relatório do dia"}
-              </Button>
+              <div className="flex items-center gap-1.5 rounded-md border border-laranja/40 bg-white pl-2">
+                <CalendarDays size={16} className="text-laranja" />
+                <input
+                  type="date"
+                  value={dataRelatorio}
+                  onChange={(e) => setDataRelatorio(e.target.value)}
+                  max={hojeIso}
+                  className="h-9 bg-transparent text-sm text-laranja outline-none"
+                  aria-label="Data do relatório"
+                />
+                <Button
+                  onClick={exportarDoDia}
+                  disabled={exportandoDia || !dataRelatorio}
+                  variant="ghost"
+                  className="h-9 rounded-l-none border-l border-laranja/40 px-3 text-laranja hover:bg-laranja/10"
+                >
+                  {exportandoDia
+                    ? "Gerando..."
+                    : ehHoje
+                      ? "Relatório do dia"
+                      : `Exportar ${formatarDataBR(dataRelatorio)}`}
+                </Button>
+              </div>
             </>
           )}
         </div>

@@ -255,10 +255,21 @@ export type LinhaHojeExport = {
   pontos_hoje: number;
 };
 
-export async function exportarRelatorioDoDia(lista: LinhaHojeExport[]) {
+/**
+ * @param lista linhas do ranking do dia escolhido (já agregadas + filtradas)
+ * @param dataIso "yyyy-mm-dd" do dia exportado; se omitido, usa hoje (timezone do navegador)
+ */
+export async function exportarRelatorioDoDia(
+  lista: LinhaHojeExport[],
+  dataIso?: string,
+) {
   const agora = new Date();
-  const dataStr = agora.toLocaleDateString("pt-BR");
   const horaStr = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+
+  // Formata DD/MM/AAAA a partir do ISO sem cair em problema de fuso
+  const iso = dataIso ?? agora.toISOString().slice(0, 10);
+  const [y, m, d] = iso.split("-");
+  const dataBr = `${d}/${m}/${y}`;
 
   const linhas: LinhaRelatorio[] = lista.map((p) => ({
     nome: p.nome,
@@ -267,14 +278,17 @@ export async function exportarRelatorioDoDia(lista: LinhaHojeExport[]) {
     pontos: p.pontos_hoje ?? 0,
   }));
 
+  const ehHoje = iso === agora.toISOString().slice(0, 10);
+  const rotuloPontos = ehHoje ? "Pontos Hoje" : "Pontos no Dia";
+
   await gerarPlanilha(linhas, {
     abaNome: "Ranking do dia",
-    tituloPlanilha: "Relatório do Dia - Copa Rapidin",
-    tituloTopo: `COPA RAPIDIN · RANKING DO DIA — ${dataStr}`,
-    subtitulo: `Pontos do dia (zera todo amanhecer) · Exportado às ${horaStr}  ·  ${lista.length} participante${lista.length === 1 ? "" : "s"} pontuaram hoje`,
-    rotuloPontos: "Pontos Hoje",
+    tituloPlanilha: `Relatório do Dia ${dataBr} - Copa Rapidin`,
+    tituloTopo: `COPA RAPIDIN · RANKING DO DIA — ${dataBr}`,
+    subtitulo: `Pontos do dia ${dataBr} · Exportado às ${horaStr}  ·  ${lista.length} participante${lista.length === 1 ? "" : "s"} pontuaram nesse dia`,
+    rotuloPontos,
     mostrarNumerosDaSorte: false,
     mostrarCadastro: false,
-    nomeArquivo: `relatorio-do-dia-copa-rapidin-${agora.toISOString().slice(0, 10)}.xlsx`,
+    nomeArquivo: `relatorio-do-dia-${iso}-copa-rapidin.xlsx`,
   });
 }
