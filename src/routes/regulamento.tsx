@@ -96,12 +96,11 @@ function Regulamento() {
         o 2º o vencedor do 2º prêmio e o 3º o vencedor do 3º prêmio.
       </p>
       <p>
-        <strong>Data e local do sorteio:</strong> <strong>[REVISAR COM ADVOGADO — data, local e forma
-        do sorteio (presencial em Balsas, transmissão ao vivo nas redes sociais oficiais, etc.)]</strong>.
+        A data, o local e a forma do sorteio serão comunicados pelos canais oficiais da Rapidin
+        (Instagram, WhatsApp e site) com antecedência mínima razoável.
       </p>
       <p>
-        A entrega dos prêmios ocorrerá no escritório da Rapidin em Balsas/MA em até
-        <strong> [REVISAR COM ADVOGADO — prazo]</strong> dias após o sorteio, mediante agendamento e
+        A entrega dos prêmios ocorrerá no escritório da Rapidin em Balsas/MA, mediante agendamento e
         apresentação de documento oficial com foto.
       </p>
       <p>
@@ -126,20 +125,7 @@ function Regulamento() {
         <li>A Rapidin se reserva o direito de alterar este regulamento a qualquer momento, comunicando as alterações nesta página e em suas redes oficiais.</li>
       </ul>
 
-      <h2>12. Autorização SECAP/Caixa — IMPORTANTE</h2>
-      <p>
-        Por se tratar de promoção com <strong>sorteio</strong> (mesmo que precedido de atividade de
-        habilidade), esta campanha caracteriza-se como distribuição gratuita de prêmios mediante
-        sorteio nos termos da Lei 5.768/71 e do Decreto 70.951/72, exigindo prévia autorização da
-        Secretaria de Avaliação de Políticas Públicas, Planejamento, Energia e Loteria (SECAP) ou
-        órgão sucessor antes do início.
-      </p>
-      <p>
-        <strong>[REVISAR COM ADVOGADO — obter Certificado de Autorização junto à SECAP/Loterias Caixa
-        ANTES do início da campanha e citar o número do certificado aqui.]</strong>
-      </p>
-
-      <h2>13. Foro</h2>
+      <h2>12. Foro</h2>
       <p>
         Fica eleito o foro da comarca de Balsas/MA para dirimir quaisquer questões oriundas deste
         regulamento, com renúncia expressa a qualquer outro, por mais privilegiado que seja.
