@@ -4,6 +4,39 @@ import { Trophy, Star, ChevronDown, ChevronUp } from "lucide-react";
 
 const medalha = ["🥈", "🥉"];
 
+// Troféu inspirado na Copa do Mundo: globo no topo apoiado por duas figuras estilizadas + base
+function TrofeuCopa({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 64 64" className={className} aria-hidden>
+      <defs>
+        <linearGradient id="ouro" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFD86B" />
+          <stop offset="50%" stopColor="#F5B400" />
+          <stop offset="100%" stopColor="#C98800" />
+        </linearGradient>
+      </defs>
+      {/* Globo (esfera) no topo */}
+      <circle cx="32" cy="14" r="8" fill="url(#ouro)" stroke="#8a5e00" strokeWidth="0.6" />
+      {/* Meridianos do globo */}
+      <ellipse cx="32" cy="14" rx="3.2" ry="8" fill="none" stroke="#8a5e00" strokeWidth="0.5" opacity="0.5" />
+      <line x1="24" y1="14" x2="40" y2="14" stroke="#8a5e00" strokeWidth="0.5" opacity="0.5" />
+      {/* Duas figuras estilizadas que sustentam o globo */}
+      <path
+        d="M22 22 C22 32, 27 34, 30 38 L30 44 L34 44 L34 38 C37 34, 42 32, 42 22 C40 24, 36 26, 32 26 C28 26, 24 24, 22 22 Z"
+        fill="url(#ouro)"
+        stroke="#8a5e00"
+        strokeWidth="0.6"
+      />
+      {/* Coluna central */}
+      <rect x="29" y="42" width="6" height="6" fill="url(#ouro)" stroke="#8a5e00" strokeWidth="0.6" />
+      {/* Base do troféu */}
+      <path d="M18 48 L46 48 L44 56 L20 56 Z" fill="url(#ouro)" stroke="#8a5e00" strokeWidth="0.6" />
+      {/* Plaquinha brilhante na base */}
+      <rect x="26" y="50" width="12" height="3" fill="#fff7d6" opacity="0.6" />
+    </svg>
+  );
+}
+
 type LinhaHoje = {
   participante_id: string;
   nome: string;
@@ -70,8 +103,8 @@ export function Ranking() {
                     className="h-24 w-24 rounded-full object-cover ring-4 ring-laranja sm:h-28 sm:w-28"
                   />
                 ) : (
-                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-laranja text-4xl font-bold text-white ring-4 ring-laranja sm:h-28 sm:w-28">
-                    {destaque.nome[0]}
+                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-amarelo to-laranja ring-4 ring-laranja sm:h-28 sm:w-28">
+                    <TrofeuCopa className="h-16 w-16 sm:h-20 sm:w-20 drop-shadow-md" />
                   </div>
                 )}
                 <div className="absolute -bottom-1 -right-1 flex h-9 w-9 items-center justify-center rounded-full bg-amarelo text-xl shadow-md ring-2 ring-white">
