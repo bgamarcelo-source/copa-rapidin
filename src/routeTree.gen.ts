@@ -9,10 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermosRouteImport } from './routes/termos'
+import { Route as RegulamentoRouteImport } from './routes/regulamento'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ParticiparRouteImport } from './routes/participar'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegulamentoRoute = RegulamentoRouteImport.update({
+  id: '/regulamento',
+  path: '/regulamento',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ParticiparRoute = ParticiparRouteImport.update({
   id: '/participar',
   path: '/participar',
@@ -33,34 +51,86 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/participar': typeof ParticiparRoute
+  '/privacidade': typeof PrivacidadeRoute
+  '/regulamento': typeof RegulamentoRoute
+  '/termos': typeof TermosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/participar': typeof ParticiparRoute
+  '/privacidade': typeof PrivacidadeRoute
+  '/regulamento': typeof RegulamentoRoute
+  '/termos': typeof TermosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/participar': typeof ParticiparRoute
+  '/privacidade': typeof PrivacidadeRoute
+  '/regulamento': typeof RegulamentoRoute
+  '/termos': typeof TermosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/participar'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/participar'
+    | '/privacidade'
+    | '/regulamento'
+    | '/termos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/participar'
-  id: '__root__' | '/' | '/admin' | '/participar'
+  to:
+    | '/'
+    | '/admin'
+    | '/participar'
+    | '/privacidade'
+    | '/regulamento'
+    | '/termos'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/participar'
+    | '/privacidade'
+    | '/regulamento'
+    | '/termos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   ParticiparRoute: typeof ParticiparRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
+  RegulamentoRoute: typeof RegulamentoRoute
+  TermosRoute: typeof TermosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regulamento': {
+      id: '/regulamento'
+      path: '/regulamento'
+      fullPath: '/regulamento'
+      preLoaderRoute: typeof RegulamentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/participar': {
       id: '/participar'
       path: '/participar'
@@ -89,6 +159,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   ParticiparRoute: ParticiparRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
+  RegulamentoRoute: RegulamentoRoute,
+  TermosRoute: TermosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

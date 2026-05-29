@@ -10,6 +10,7 @@ import { Participe } from "@/components/site/Participe";
 import { Galeria } from "@/components/site/Galeria";
 import { Duvidas } from "@/components/site/Duvidas";
 import { Footer } from "@/components/site/Footer";
+import { CookieBanner } from "@/components/site/CookieBanner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,6 +38,7 @@ function Index() {
       <Galeria />
       <Duvidas />
       <Footer />
+      <CookieBanner />
     </div>
   );
 }

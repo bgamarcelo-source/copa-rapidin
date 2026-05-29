@@ -1,4 +1,5 @@
 import { Globe } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 function WhatsappIcon({ size = 18 }: { size?: number }) {
   return (
@@ -79,8 +80,17 @@ export function Footer() {
           </a>
         </div>
       </div>
-      <div className="border-t border-white/15 py-4 text-center text-xs opacity-80">
-        © {new Date().getFullYear()} Rapidin Internet · Promoção de Chute ao Gol · Balsas/MA
+      <div className="border-t border-white/15 py-4 text-center text-xs opacity-90">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 sm:flex-row sm:justify-between">
+          <span>© {new Date().getFullYear()} Rapidin Internet · Promoção de Chute ao Gol · Balsas/MA</span>
+          <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            <Link to="/regulamento" className="hover:underline">Regulamento</Link>
+            <span className="opacity-50">·</span>
+            <Link to="/termos" className="hover:underline">Termos de uso</Link>
+            <span className="opacity-50">·</span>
+            <Link to="/privacidade" className="hover:underline">Privacidade</Link>
+          </nav>
+        </div>
       </div>
     </footer>
   );

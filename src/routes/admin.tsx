@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { asset } from "@/lib/assets";
+import { useState } from "react";
 import { AuthGate } from "@/components/admin/AuthGate";
 import { LancarPontos } from "@/components/admin/LancarPontos";
 import { ParticipantesAdmin } from "@/components/admin/Participantes";
@@ -29,23 +28,7 @@ const abas: { id: Aba; titulo: string; icon: typeof Target }[] = [
   { id: "galeria", titulo: "Galeria", icon: Camera },
 ];
 
-function useAdminFavicon() {
-  useEffect(() => {
-    const link = document.querySelector<HTMLLinkElement>("link[rel='icon']");
-    const apple = document.querySelector<HTMLLinkElement>("link[rel='apple-touch-icon']");
-    const prevIcon = link?.href;
-    const prevApple = apple?.href;
-    if (link) link.href = asset("/favicon-admin.png");
-    if (apple) apple.href = asset("/favicon-admin.png");
-    return () => {
-      if (link && prevIcon) link.href = prevIcon;
-      if (apple && prevApple) apple.href = prevApple;
-    };
-  }, []);
-}
-
 function AdminPage() {
-  useAdminFavicon();
   return (
     <AuthGate>
       {(user) => <AdminInner userId={user.id} email={user.email} />}
