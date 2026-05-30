@@ -45,7 +45,7 @@ export function AuthGate({ children }: { children: (user: { id: string; email: s
         setEtapa("admins");
         try {
           const { data: adm, error } = await withTimeout(
-            supabase.from("admins").select("user_id").eq("user_id", u.id).maybeSingle(),
+            Promise.resolve(supabase.from("admins").select("user_id").eq("user_id", u.id).maybeSingle()),
             5000,
             "admins"
           );
