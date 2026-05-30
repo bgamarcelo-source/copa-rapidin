@@ -7,9 +7,9 @@ import { Loader2 } from "lucide-react";
 
 type Etapa = "iniciando" | "session" | "admins" | "pronto" | "erro";
 
-function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+function withTimeout<T>(p: PromiseLike<T>, ms: number, label: string): Promise<T> {
   return Promise.race([
-    p,
+    Promise.resolve(p),
     new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Timeout em ${label} (${ms}ms)`)), ms)),
   ]);
 }
