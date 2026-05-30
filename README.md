@@ -1,6 +1,6 @@
-# Copa Rapidin — Promoção Chute ao Gol
+# Copa Rapidin — Do Arraiá pro Gol é Rapidin
 
-Landing page + painel admin para a promoção da Copa do Mundo da Rapidin Internet (Balsas/MA).
+Landing page + painel admin para a campanha "Do Arraiá pro Gol é Rapidin", da Rapidin Internet, válida em todas as cidades atendidas pela empresa durante o período promocional.
 
 ## Stack
 
